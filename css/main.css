@@ -1,0 +1,10 @@
+.widget-title, .box-title {
+	margin-bottom: 0px;
+}
+.post-title {
+	font-size: 13px;
+	padding: 10px;
+}
+pre {
+	padding: 10px;
+}

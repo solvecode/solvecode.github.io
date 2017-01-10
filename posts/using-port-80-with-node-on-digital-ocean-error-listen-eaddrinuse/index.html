@@ -1,0 +1,124 @@
+<html><head><title>Using port 80 with Node on Digital Ocean Error listen EADDRINUSE</title><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/main.css"/></head><body class="home-template"><header class="main-header"><div class="header clearfix"><div class="logo-wrap col-md-4"><h1 class="blogtitle"><a title="Solve Code" href="/">Solve Code</a></h1><h2 class="blogdescription">Simple to find your stack solution</h2></div></div></header><main class="main-wrapper container"><div class="row"><div class="sidebar col-md-9"><div class="widget sidebar-widget"><h3 class="widget-title uppercase"><span>Using port 80 with Node on Digital Ocean Error listen EADDRINUSE</span></h3><div>Published 04, January 2016</div><hr/><div class="widget-content recent-posts"><article id="article"><br/><div><p>I am trying to run the simplest of node servers on a Digital Ocean server. I developed and tested the code using port <code>8080</code> without problems. However, now I want to use port 80 so that I do not need to specify the port when navigating to the ip address of my server (so it will default).</p>
+<p>When I change the port to 80 and run the app as sudo I get <code>Error: listen EADDRINUSE</code> even when I do not have any other applications running on the server (at all). Is there a way to clear port 80 for use?</p>
+<p>There are no other processes in my code that are listening on any port. There is actually no app running on my server at all so I do not understand how the port could be in use. Thanks for any help</p>
+<p>Edit. Here is what running <code>netstat</code> returns:</p>
+<pre><code class="lang-bash">Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 192.241.228.76:ssh      mobile-166-137-17:62351 ESTABLISHED
+tcp        0      0 192.241.228.76:ssh      199-241-200-214.P:41732 ESTABLISHED
+tcp        0      0 192.241.228.76:9090     199-241-200-214.P:38480 ESTABLISHED
+tcp        0      0 192.241.228.76:ssh      mobile-166-137-17:45329 ESTABLISHED
+tcp        0      0 192.241.228.76:ssh      199-241-200-214.P:47247 ESTABLISHED
+tcp        0    308 192.241.228.76:ssh      199-241-200-214.P:44441 ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  8      [ ]         DGRAM                    7710     /dev/log
+unix  3      [ ]         STREAM     CONNECTED     1113212  
+unix  3      [ ]         STREAM     CONNECTED     7405     @/com/ubuntu/upstart
+unix  3      [ ]         STREAM     CONNECTED     7394     
+unix  3      [ ]         STREAM     CONNECTED     1113211  
+unix  2      [ ]         DGRAM                    9255     
+unix  3      [ ]         STREAM     CONNECTED     7681     
+unix  3      [ ]         STREAM     CONNECTED     7617     /var/run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     1113404  
+unix  3      [ ]         STREAM     CONNECTED     1113682  
+unix  2      [ ]         DGRAM                    1113070  
+unix  2      [ ]         DGRAM                    1113287  
+unix  3      [ ]         STREAM     CONNECTED     1113683  /var/run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     1113675  
+unix  3      [ ]         STREAM     CONNECTED     7601     
+unix  3      [ ]         STREAM     CONNECTED     7602     
+unix  3      [ ]         STREAM     CONNECTED     7631     @/com/ubuntu/upstart
+unix  3      [ ]         STREAM     CONNECTED     1114471  
+unix  2      [ ]         DGRAM                    1111881  
+unix  3      [ ]         STREAM     CONNECTED     1113411  
+unix  3      [ ]         STREAM     CONNECTED     1113219  /var/run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     1113218  
+unix  3      [ ]         STREAM     CONNECTED     1112008  
+unix  3      [ ]         STREAM     CONNECTED     8858     @/com/ubuntu/upstart
+unix  3      [ ]         DGRAM                    7439     
+unix  3      [ ]         STREAM     CONNECTED     7682     /var/run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     8836     
+unix  3      [ ]         STREAM     CONNECTED     1114472  
+unix  3      [ ]         DGRAM                    7438     
+unix  3      [ ]         STREAM     CONNECTED     1113412  /var/run/dbus/system_bus_socket
+unix  3      [ ]         STREAM     CONNECTED     1113676  
+unix  2      [ ]         DGRAM                    1113552  
+unix  3      [ ]         STREAM     CONNECTED     1113405  
+unix  3      [ ]         STREAM     CONNECTED     7616     
+unix  3      [ ]         STREAM     CONNECTED     7594     
+unix  3      [ ]         STREAM     CONNECTED     1112002  
+unix  2      [ ]         DGRAM                    1114349  
+unix  3      [ ]         STREAM     CONNECTED     1112001  
+unix  3      [ ]         STREAM     CONNECTED     1112009  /var/run/dbus/system_bus_socket
+</code></pre>
+<p>And here is what running <code>ps -ax</code> returns</p>
+<pre><code class="lang-bash"> PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:05 /sbin/init
+    2 ?        S      0:00 [kthreadd]
+    3 ?        S      0:01 [ksoftirqd/0]
+    5 ?        S&lt;     0:00 [kworker/0:0H]
+    7 ?        S      0:09 [rcu_sched]
+    8 ?        S      0:00 [rcu_bh]
+    9 ?        S      0:00 [migration/0]
+   10 ?        S      0:14 [watchdog/0]
+   11 ?        S&lt;     0:00 [khelper]
+   12 ?        S      0:00 [kdevtmpfs]
+   13 ?        S&lt;     0:00 [netns]
+   14 ?        S&lt;     0:00 [writeback]
+   15 ?        S&lt;     0:00 [kintegrityd]
+   16 ?        S&lt;     0:00 [bioset]
+   17 ?        S&lt;     0:00 [kworker/u3:0]
+   18 ?        S&lt;     0:00 [kblockd]
+   19 ?        S&lt;     0:00 [ata_sff]
+   20 ?        S      0:00 [khubd]
+   21 ?        S&lt;     0:00 [md]
+   22 ?        S&lt;     0:00 [devfreq_wq]
+   23 ?        S      2:16 [kworker/0:1]
+   24 ?        S      0:00 [khungtaskd]
+   25 ?        S      0:00 [kswapd0]
+   26 ?        SN     0:00 [ksmd]
+   27 ?        S      0:00 [fsnotify_mark]
+   28 ?        S      0:00 [ecryptfs-kthrea]
+   29 ?        S&lt;     0:00 [crypto]
+   41 ?        S&lt;     0:00 [kthrotld]
+   44 ?        S      0:00 [scsi_eh_0]
+   45 ?        S      0:00 [scsi_eh_1]
+   65 ?        S&lt;     0:00 [deferwq]
+   66 ?        S&lt;     0:00 [charger_manager]
+  119 ?        S      0:04 [jbd2/vda-8]
+  120 ?        S&lt;     0:00 [ext4-rsv-conver]
+  254 ?        S      0:00 upstart-udev-bridge --daemon
+  259 ?        Ss     0:00 /lib/systemd/systemd-udevd --daemon
+  321 ?        Ss     0:00 dbus-daemon --system --fork
+  351 ?        Ss     0:00 /lib/systemd/systemd-logind
+  354 ?        Ssl    0:19 rsyslogd
+  363 ?        S      0:00 upstart-file-bridge --daemon
+  367 ?        S&lt;     0:00 [kpsmoused]
+  371 ?        S      0:00 [kworker/0:2]
+  463 ?        S&lt;     0:00 [kvm-irqfd-clean]
+  730 ?        S      0:00 upstart-socket-bridge --daemon
+  773 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
+  777 tty5     Ss+    0:00 /sbin/getty -8 38400 tty5
+  783 tty2     Ss+    0:00 /sbin/getty -8 38400 tty2
+  784 tty3     Ss+    0:00 /sbin/getty -8 38400 tty3
+  786 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
+  811 ?        Ss     0:12 /usr/sbin/sshd -D
+  817 ?        Ss     0:00 acpid -c /etc/acpi/events -s /var/run/acpid.socket
+  819 ?        Ss     0:02 cron
+  821 ?        Ss     0:00 atd
+  898 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
+  933 ?        S&lt;     0:00 [kworker/u3:1]
+  938 ?        S      0:00 [kauditd]
+24995 ?        S      0:00 [kworker/u2:1]
+29226 ?        S      0:07 [kworker/u2:0]
+29542 ?        Ss     0:00 SCREEN
+29543 pts/2    Ss+    0:00 /bin/bash
+30826 pts/6    Ss+    0:00 -bash
+30892 ?        Sl     0:00 nodejs index.js
+30962 pts/1    R+     0:00 ps -ax
+</code></pre>
+<h2 id="solve">Solve</h2>
+<p>I got this error. It seems that Node will throw this error, even if the address isn&#39;t in use, if it fails to attach the process to the port for any reason.</p>
+<p>In my case (a Digital Ocean droplet) attaching to port 80 required <code>sudo</code>.</p>
+</div></article></div></div></div></div></main></body><script src="/js/jquery.min.js"></script><script src="/js/bootstrap.min.js"></script></html>

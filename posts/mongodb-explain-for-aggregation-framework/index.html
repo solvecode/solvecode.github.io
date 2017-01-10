@@ -1,0 +1,44 @@
+<html><head><title>Mongodb Explain for Aggregation framework</title><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/main.css"/></head><body class="home-template"><header class="main-header"><div class="header clearfix"><div class="logo-wrap col-md-4"><h1 class="blogtitle"><a title="Solve Code" href="/">Solve Code</a></h1><h2 class="blogdescription">Simple to find your stack solution</h2></div></div></header><main class="main-wrapper container"><div class="row"><div class="sidebar col-md-9"><div class="widget sidebar-widget"><h3 class="widget-title uppercase"><span>Mongodb Explain for Aggregation framework</span></h3><div>Published 06, January 2016</div><hr/><div class="widget-content recent-posts"><article id="article"><br/><div><p>Is there an explain function for the Aggregation framework in MongoDB? I can&#39;t see it in the documentation.</p>
+<p>If not is there some other way to check, how a query performs within the aggregation framework?</p>
+<p>I know with find you just do</p>
+<pre><code class="lang-js">db.collection.find().explain()
+</code></pre>
+<p>But with the aggregation framework I get an error</p>
+<pre><code class="lang-js">db.collection.aggregate(
+    { $project : { &quot;Tags._id&quot; : 1 }},
+    { $unwind : &quot;$Tags&quot; },
+    { $match: {$or: [{&quot;Tags._id&quot;:&quot;tag1&quot;},{&quot;Tags._id&quot;:&quot;tag2&quot;}]}},
+    { 
+        $group: 
+        { 
+            _id : { id: &quot;$_id&quot;},
+            &quot;count&quot;: { $sum:1 } 
+        }
+    },
+    { $sort: {&quot;count&quot;:-1}}
+).explain()
+</code></pre>
+<h2 id="solve">Solve</h2>
+<p>There isn&#39;t an explain() feature for the Aggregation Framework as at MongoDB 2.2.0, however you should read up on the documentation regarding <a href="http://docs.mongodb.org/manual/core/aggregation-pipeline/#aggregation-pipeline-behavior">Optimizing Performance</a>.</p>
+<p>The following pipeline operators take advantage of an index when they occur at the beginning of the pipeline:</p>
+<pre><code>$match $sort $limit $skip
+</code></pre><p>The above operators can also use an index when placed before the following aggregation operators:</p>
+<pre><code>$project $unwind $group
+</code></pre><p>So for your specific example, the pipeline will execute faster if you add an initial $match at the beginning to reduce the number of documents that need to be projected/unwound for the subsequent <code>$match</code>.</p>
+<h2 id="update">Update</h2>
+<p>MongoDB 2.6 (which is currently a Release Candidate) now includes an <code>explain</code> <a href="http://docs.mongodb.org/master/reference/method/db.collection.aggregate/#db.collection.aggregate">option for the aggregation pipeline</a>.</p>
+<pre><code>db.collection.aggregate([
+    { $project : { &quot;Tags._id&quot; : 1 }},
+    { $unwind : &quot;$Tags&quot; },
+    { $match: {$or: [{&quot;Tags._id&quot;:&quot;tag1&quot;},{&quot;Tags._id&quot;:&quot;tag2&quot;}]}},
+    { $group: { 
+        _id : &quot;$_id&quot;,
+        count: { $sum:1 } 
+    }},
+    {$sort: {&quot;count&quot;:-1}}
+  ],
+  {
+    explain:true
+  }
+)
+</code></pre></div></article></div></div></div></div></main></body><script src="/js/jquery.min.js"></script><script src="/js/bootstrap.min.js"></script></html>

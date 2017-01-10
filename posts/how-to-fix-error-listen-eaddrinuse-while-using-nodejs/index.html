@@ -1,0 +1,42 @@
+<html><head><title>How to fix Error listen EADDRINUSE while using nodejs</title><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/css/style.css"/><link rel="stylesheet" href="/css/main.css"/></head><body class="home-template"><header class="main-header"><div class="header clearfix"><div class="logo-wrap col-md-4"><h1 class="blogtitle"><a title="Solve Code" href="/">Solve Code</a></h1><h2 class="blogdescription">Simple to find your stack solution</h2></div></div></header><main class="main-wrapper container"><div class="row"><div class="sidebar col-md-9"><div class="widget sidebar-widget"><h3 class="widget-title uppercase"><span>How to fix Error listen EADDRINUSE while using nodejs</span></h3><div>Published 04, January 2016</div><hr/><div class="widget-content recent-posts"><article id="article"><br/><div><p>If I run a server with the port 80, and I try to use xmlHTTPrequest i get this error: <code>Error: listen EADDRINUSE</code></p>
+<p>Why is it problem for nodejs, if I want to do a request, while I run a server on the port 80? For the webbrowsers it is not a problem: I can surf on the internet, while the server is running.</p>
+<p>The server is:</p>
+<pre><code class="lang-js">  net.createServer(function (socket) {
+    socket.name = socket.remoteAddress + &quot;:&quot; + socket.remotePort;
+    console.log(&#39;connection request from: &#39; + socket.remoteAddress);
+    socket.destroy();
+  }).listen(options.port);
+</code></pre>
+<p>And the request:</p>
+<pre><code class="lang-js">var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function() {
+    sys.puts(&quot;State: &quot; + this.readyState);
+
+    if (this.readyState == 4) {
+        sys.puts(&quot;Complete.\nBody length: &quot; + this.responseText.length);
+        sys.puts(&quot;Body:\n&quot; + this.responseText);
+    }
+};
+
+xhr.open(&quot;GET&quot;, &quot;http://mywebsite.com&quot;);
+xhr.send();
+</code></pre>
+<h2 id="solve">Solve</h2>
+<p><code>EADDRINUSE</code> means that the port number which <code>listen()</code> tries to bind the server to is already in use.</p>
+<p>So, in your case, there must be running a server on port 80 already.</p>
+<p>If you have another webserver running on this port you have to put node.js behind that server and proxy it through it.</p>
+<p>You should check for the listening event like this, to see if the server is really listening:</p>
+<pre><code class="lang-js">var http=require(&#39;http&#39;);
+
+var server=http.createServer(function(req,res){
+    res.end(&#39;test&#39;);
+});
+
+server.on(&#39;listening&#39;,function(){
+    console.log(&#39;ok, server is running&#39;);
+});
+
+server.listen(80);
+</code></pre>
+</div></article></div></div></div></div></main></body><script src="/js/jquery.min.js"></script><script src="/js/bootstrap.min.js"></script></html>
